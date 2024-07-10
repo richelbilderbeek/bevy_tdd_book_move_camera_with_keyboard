@@ -53,6 +53,14 @@ fn get_camera_rotation(app: &mut App) -> f32 {
 }
 
 #[cfg(test)]
+fn get_camera_zoom(app: &mut App) -> f32 {
+    let mut query = app.world_mut().query::<(&OrthographicProjection, &Camera)>();
+    let (projection, _) = query.single(app.world());
+    projection.scale
+}
+
+
+#[cfg(test)]
 fn get_player_position(app: &mut App) -> Vec2 {
     let mut query = app.world_mut().query::<(&Transform, &Player)>();
     let (transform, _) = query.single(app.world());
@@ -73,10 +81,10 @@ fn count_n_cameras(app: &mut App) -> usize {
 }
 
 fn respond_to_keyboard(
-    mut query: Query<(&mut Transform, &Camera)>,
+    mut query: Query<(&mut Transform, &mut OrthographicProjection, &Camera)>,
     input: Res<ButtonInput<KeyCode>>,
 ) {
-    let (mut transform, _) = query.single_mut();
+    let (mut transform, mut projection, _) = query.single_mut();
     use bevy::input::keyboard::KeyCode;
     if input.pressed(KeyCode::ArrowRight) {
         transform.translation.x += 1.0;
@@ -95,6 +103,12 @@ fn respond_to_keyboard(
     }
     if input.pressed(KeyCode::KeyE) {
         transform.rotate_z(0.1);
+    }
+    if input.pressed(KeyCode::KeyW) {
+        projection.scale /= 1.1
+    }
+    if input.pressed(KeyCode::KeyS) {
+        projection.scale *= 1.1
     }
 }
 
@@ -147,6 +161,13 @@ mod tests {
         let mut app = create_app();
         app.update();
         assert_eq!(get_camera_rotation(&mut app), 0.0);
+    }
+
+    #[test]
+    fn test_camera_is_not_zoomed_in_or_out_at_start() {
+        let mut app = create_app();
+        app.update();
+        assert_eq!(get_camera_zoom(&mut app), 1.0);
     }
 
     #[test]
@@ -233,6 +254,35 @@ mod tests {
         app.update();
 
         assert_ne!(get_camera_rotation(&mut app), 0.0);
+    }
+
+    #[test]
+    fn test_camera_zooms_in_when_pressed_w() {
+        let mut app = create_app();
+        app.update();
+        assert_eq!(get_camera_zoom(&mut app), 1.0);
+
+        // Press the key
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::KeyW);
+        app.update();
+
+        assert!(get_camera_zoom(&mut app) < 1.0);
+    }
+    #[test]
+    fn test_camera_zoom_out_when_pressed_s() {
+        let mut app = create_app();
+        app.update();
+        assert_eq!(get_camera_zoom(&mut app), 1.0);
+
+        // Press the key
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::KeyS);
+        app.update();
+
+        assert!(get_camera_zoom(&mut app) > 1.0);
     }
 
 }
