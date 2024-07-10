@@ -118,14 +118,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_can_create_app() {
-        create_app();
+    fn test_empty_app_has_no_cameras() {
+        let mut app = App::new();
+        assert_eq!(count_n_cameras(&mut app), 0);
     }
 
     #[test]
-    fn test_empty_app_has_no_moving_cameras() {
-        let mut app = App::new();
-        assert_eq!(count_n_cameras(&mut app), 0);
+    fn test_can_create_app() {
+        create_app();
     }
 
     #[test]
