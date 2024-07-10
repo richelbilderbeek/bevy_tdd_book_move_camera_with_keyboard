@@ -46,6 +46,13 @@ fn get_camera_position(app: &mut App) -> Vec2 {
 }
 
 #[cfg(test)]
+fn get_camera_rotation(app: &mut App) -> f32 {
+    let mut query = app.world_mut().query::<(&Transform, &Camera)>();
+    let (transform, _) = query.single(app.world());
+    transform.rotation.z
+}
+
+#[cfg(test)]
 fn get_player_position(app: &mut App) -> Vec2 {
     let mut query = app.world_mut().query::<(&Transform, &Player)>();
     let (transform, _) = query.single(app.world());
@@ -83,6 +90,12 @@ fn respond_to_keyboard(
     if input.pressed(KeyCode::ArrowDown) {
         transform.translation.y -= 1.0;
     }
+    if input.pressed(KeyCode::KeyQ) {
+        transform.rotate_z(-0.1);
+    }
+    if input.pressed(KeyCode::KeyE) {
+        transform.rotate_z(0.1);
+    }
 }
 
 
@@ -117,7 +130,6 @@ mod tests {
 
     #[test]
     fn test_player_has_a_custom_scale() {
-        let velocity = Vec2::new(0.0, 0.0);
         let mut app = create_app();
         app.update();
         assert_eq!(get_player_scale(&mut app), Vec2::new(64.0, 32.0));
@@ -128,6 +140,13 @@ mod tests {
         let mut app = create_app();
         app.update();
         assert_eq!(get_camera_position(&mut app), Vec2::new(0.0, 0.0));
+    }
+
+    #[test]
+    fn test_camera_is_not_rotated_at_start() {
+        let mut app = create_app();
+        app.update();
+        assert_eq!(get_camera_rotation(&mut app), 0.0);
     }
 
     #[test]
@@ -185,4 +204,37 @@ mod tests {
         app.update();assert_ne!(get_camera_position(&mut app), Vec2::new(0.0, 0.0));
 
     }
+
+    #[test]
+    fn test_camera_rotates_when_pressed_q() {
+        let mut app = create_app();
+        app.update();
+        assert_eq!(get_camera_rotation(&mut app), 0.0);
+
+        // Press the key
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::KeyQ);
+        app.update();
+
+        println!("{:?}", get_camera_rotation(&mut app));
+
+        assert_ne!(get_camera_rotation(&mut app), 0.0);
+    }
+
+    #[test]
+    fn test_camera_rotates_when_pressed_e() {
+        let mut app = create_app();
+        app.update();
+        assert_eq!(get_camera_rotation(&mut app), 0.0);
+
+        // Press the key
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::KeyE);
+        app.update();
+
+        assert_ne!(get_camera_rotation(&mut app), 0.0);
+    }
+
 }
