@@ -217,8 +217,6 @@ mod tests {
             .press(KeyCode::KeyQ);
         app.update();
 
-        println!("{:?}", get_camera_rotation(&mut app));
-
         assert_ne!(get_camera_rotation(&mut app), 0.0);
     }
 
