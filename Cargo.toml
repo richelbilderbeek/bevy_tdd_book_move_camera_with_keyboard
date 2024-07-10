@@ -1,5 +1,5 @@
 [package]
-name = "bevy_tdd_book_move_camera"
+name = "bevy_tdd_book_move_camera_with_keyboard"
 version = "0.1.0"
 edition = "2021"
 
