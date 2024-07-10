@@ -39,27 +39,6 @@ linker = "clang"
 rustflags = ["-C", "link-arg=-fuse-ld=lld"]
 ```
 
-Code:
-
-```rust
-use bevy::prelude::*;
-
-fn main() {
-    let mut app = App::new();
-    app.run();
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_testing() {
-        assert_eq!(1 + 1, 2)
-    }
-}
-```
-
 ## Files used by continuous integration scripts
 
 Filename                                  |Descriptions
