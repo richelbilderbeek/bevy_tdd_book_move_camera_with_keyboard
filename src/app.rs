@@ -56,7 +56,7 @@ fn get_camera_rotation(app: &mut App) -> f32 {
 fn get_camera_zoom(app: &mut App) -> f32 {
     let mut query = app.world_mut().query::<(&OrthographicProjection, &Camera)>();
     let (projection, _) = query.single(app.world());
-    projection.size
+    projection.scale
 }
 
 
@@ -105,10 +105,10 @@ fn respond_to_keyboard(
         transform.rotate_z(0.1);
     }
     if input.pressed(KeyCode::KeyW) {
-        projection.size /= 1.1
+        projection.scale /= 1.1
     }
     if input.pressed(KeyCode::KeyS) {
-        projection.size *= 1.1
+        projection.scale *= 1.1
     }
 }
 
