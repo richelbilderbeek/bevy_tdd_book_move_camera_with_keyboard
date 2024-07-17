@@ -20,9 +20,7 @@ pub fn create_app() -> App {
 }
 
 fn add_camera(mut commands: Commands) {
-    commands.spawn(
-        Camera2dBundle::default()
-    );
+    commands.spawn(Camera2dBundle::default());
 }
 
 fn add_player(mut commands: Commands) {
@@ -54,11 +52,12 @@ fn get_camera_rotation(app: &mut App) -> f32 {
 
 #[cfg(test)]
 fn get_camera_zoom(app: &mut App) -> f32 {
-    let mut query = app.world_mut().query::<(&OrthographicProjection, &Camera)>();
+    let mut query = app
+        .world_mut()
+        .query::<(&OrthographicProjection, &Camera)>();
     let (projection, _) = query.single(app.world());
     projection.scale
 }
-
 
 #[cfg(test)]
 fn get_player_position(app: &mut App) -> Vec2 {
@@ -111,7 +110,6 @@ fn respond_to_keyboard(
         projection.scale *= 1.1
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -182,7 +180,6 @@ mod tests {
             .press(KeyCode::ArrowUp);
         app.update();
         assert_ne!(get_camera_position(&mut app), Vec2::new(0.0, 0.0));
-
     }
     #[test]
     fn test_camera_moves_when_pressed_right() {
@@ -196,7 +193,6 @@ mod tests {
             .press(KeyCode::ArrowRight);
         app.update();
         assert_ne!(get_camera_position(&mut app), Vec2::new(0.0, 0.0));
-
     }
     #[test]
     fn test_camera_moves_when_pressed_down() {
@@ -210,7 +206,6 @@ mod tests {
             .press(KeyCode::ArrowDown);
         app.update();
         assert_ne!(get_camera_position(&mut app), Vec2::new(0.0, 0.0));
-
     }
     #[test]
     fn test_camera_moves_when_pressed_left() {
@@ -222,8 +217,8 @@ mod tests {
         app.world_mut()
             .resource_mut::<ButtonInput<KeyCode>>()
             .press(KeyCode::ArrowLeft);
-        app.update();assert_ne!(get_camera_position(&mut app), Vec2::new(0.0, 0.0));
-
+        app.update();
+        assert_ne!(get_camera_position(&mut app), Vec2::new(0.0, 0.0));
     }
 
     #[test]
@@ -284,5 +279,4 @@ mod tests {
 
         assert!(get_camera_zoom(&mut app) > 1.0);
     }
-
 }
